@@ -13,10 +13,14 @@ It's written with a quick and dirty approach, but it has been doing its job exce
  - Matplotlib >= 2.2
  - PySerial >= 2.7
  - Pandas >= 0.23
+ - PyQt5 >= 5.6.2
  
 Execute wrapper.py.
 
+It has been developed on a mac, but it is used on a win10 machine. The .ui file is drawn up with QtDesigner, and imported as such. It has been easy for me to maintain and adjust in that way.
 In wrapper.py, there's two lines in the `__init__()` that sets whether it's in demo-mode.
+
+Also note that the COM ports has to be set manually.
 
 
 ## Noteworthy nice bits
@@ -24,6 +28,7 @@ In wrapper.py, there's two lines in the `__init__()` that sets whether it's in d
  
  
 If you have suggestions for improvement, I'm all ears!
+Scan accumulations has not been implemented yet.
  
  
 Notes on licensing: Go ahead and use it. If you benefit from it, it's good. Buy me a beer if you meet me, and it seems reasonable. 
