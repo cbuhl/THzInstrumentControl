@@ -30,5 +30,6 @@ Also note that the COM ports has to be set manually.
 If you have suggestions for improvement, I'm all ears!
 Scan accumulations has not been implemented yet.
  
- 
-Notes on licensing: Go ahead and use it. If you benefit from it, it's good. Buy me a beer if you meet me, and it seems reasonable. 
+
+__Licensed under GNU GPLv3.__
+I'd be thrilled to hear from you if you benefit from this.
