@@ -26,4 +26,4 @@ In wrapper.py, there's two lines in the `__init__()` that sets whether it's in d
 If you have suggestions for improvement, I'm all ears!
  
  
-Notes on licensing: Go ahead and use it. If you benefit from it, it's good. Buy me a beer if you meet me, and it seems reasonably. 
+Notes on licensing: Go ahead and use it. If you benefit from it, it's good. Buy me a beer if you meet me, and it seems reasonable. 
