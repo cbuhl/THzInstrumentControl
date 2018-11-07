@@ -2,7 +2,7 @@ import sys, time, os
 import numpy as np
 import pandas as pd
 from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import QApplication, QDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.uic import loadUi
 
 from InstrumentControl import SR530, SR530demo, ArduinoStageController, ArduinoStageControllerDemo
@@ -15,10 +15,10 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 
-class thzWindow(QDialog):
+class thzWindow(QMainWindow):
     def __init__(self):
         super(thzWindow, self).__init__()
-        loadUi('thzScan.ui', self)
+        loadUi('MainWindow.ui', self)
         self.setWindowTitle('THz Scan GUI')
 
         # A hack is needed to start the drop down menus in a sane place.
