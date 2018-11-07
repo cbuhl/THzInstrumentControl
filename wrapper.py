@@ -4,8 +4,10 @@ import pandas as pd
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QApplication, QDialog
 from PyQt5.uic import loadUi
-
-from InstrumentControl import SR530, SR530demo, ArduinoStageController, ArduinoStageControllerDemo
+import yaml
+from InstrumentControl import StageFactory, LIA_Factory
+import os.path
+import logging
 
 #Stuff for plotting
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -16,8 +18,9 @@ import matplotlib.pyplot as plt
 
 
 class thzWindow(QDialog):
-    def __init__(self):
+    def __init__(self, config: dict):
         super(thzWindow, self).__init__()
+        self.config = config
         loadUi('thzScan.ui', self)
         self.setWindowTitle('THz Scan GUI')
 
@@ -28,21 +31,8 @@ class thzWindow(QDialog):
         ########################################################################
         ##           Load InstrumentControl classes and initiate              ##
         ########################################################################
-        #Check for os:
-        if os.name == 'nt': #Respond to windows platform
-            print('Identified Windows OS')
-            portLIA = 'com3' #Prolific driver
-            portStage = 'com4' #Arduino Uno ID
-        elif os.name == 'posix':
-            print('Identified Mac OS')
-            portLIA = '/dev/tty.usbserial'
-            portStage = '/dev/tty.usbmodem1421'
-        else:
-            print('CRITICAL: Unidentified OS.')
 
-        '''Change this line to SR530demo, for the demo-mode'''
-        #self.lia = SR530(portLIA, 19200)
-        self.lia = SR530demo(portLIA, 19200)
+        self.lia = LIA_Factory.factory(config.get("lia_name"), port=config.get("lia_port"), baudrate=config.get("lia_baud"))
         self.lia.connect()
         time.sleep(0.25)
         self.lia.standard_setup()
@@ -56,10 +46,7 @@ class thzWindow(QDialog):
         else:
             self.save_files = True
 
-
-
-        #self.stage = ArduinoStageController(portStage, 9600)
-        self.stage = ArduinoStageControllerDemo(portStage, 9600)
+        self.stage = StageFactory.factory(config.get("stage_name"), port=config.get("stage_port"), baudrate=config.get("stage_baud"))
         self.stage.connect()
         self.stage.initialize()
 
@@ -347,12 +334,43 @@ class thzWindow(QDialog):
             plt.pause(0.000001)
 
 
+if __name__ == "__main__":
+    # setup default config
+    config = None
+    if os.name == "nt":
+        config = {
+            "lia_name": "demo",
+            "lia_port": "/dev/tty.usbserial",
+            "lia_baud": 19200,
+            "stage_name": "demo",
+            "stage_port": "/dev/tty.usbmodem1421",
+            "stage_baud": 9600
+        }
+    elif os.name == "posix":
+        config = {
+            "lia_name": "demo",
+            "lia_port": "/dev/tty.usbserial",
+            "lia_baud": 19200,
+            "stage_name": "demo",
+            "stage_port": "/dev/tty.usbmodem1421",
+            "stage_baud": 9600
+        }
+    else:
+        logging.warning("Unidentified OS, no default config exists")
 
+    config_path = os.path.join(os.path.dirname(__file__), "config.yaml")
+    try:
+        with open(config_path) as f:
+            config = {**config, **yaml.load(f)}  # see https://stackoverflow.com/a/26853961
+    except (OSError, yaml.YAMLError) as e:
+        logging.warning("Could not load config file {}, using defaults".format(config_path))
+        if config is None:
+            logging.error("No defaults exists, aborting")
+            sys.exit(1)  # non-zero values indicate errors as per convention
 
+    app = QApplication(sys.argv)
+    widget = thzWindow(config)
 
-app = QApplication(sys.argv)
-widget = thzWindow()
+    widget.show()
 
-widget.show()
-
-sys.exit(app.exec_())
+    sys.exit(app.exec_())

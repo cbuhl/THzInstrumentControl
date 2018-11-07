@@ -3,8 +3,32 @@ import numpy as np
 from time import sleep
 
 
+class LIA_Factory:
+    DEMO = "demo"
+    SR530 = "SR530"
+
+    @classmethod
+    def factory(cls, name, **kwargs):
+        if name == cls.DEMO:
+            return SR530demo(**kwargs)
+        if name == cls.SR530:
+            return SR530(**kwargs)
+        raise NotImplementedError("The LIA type {} is not implemented".format(name))
+
+class StageFactory:
+    DEMO = "demo"
+    ARDUINO = "arduino"
+
+    @classmethod
+    def factory(cls, name, **kwargs):
+        if name == cls.DEMO:
+            return ArduinoStageControllerDemo(**kwargs)
+        if name == cls.ARDUINO:
+            return ArduinoStageController(**kwargs)
+        raise NotImplementedError("The stage type {} is not implemented".format(name))
+
 class SR530demo():
-    def __init__(self, port, baudrate):
+    def __init__(self, **kwargs):
         pass
         self.datasetX = np.sin(np.linspace(0, 10*np.pi, 2500))
         self.datasetY = np.cos(np.linspace(0, 10*np.pi, 2500))
@@ -47,10 +71,10 @@ class SR530demo():
 
 
 class SR530:
-    def __init__(self, port, baudrate):
-        self.port = port
-        self.baudrate = baudrate
-        if baudrate < 0:
+    def __init__(self, **kwargs):
+        self.port = kwargs.get("port")
+        self.baudrate = kwargs.get("baudrate")
+        if self.baudrate < 0:
             self.demomode=True
         else:
             self.demomode=False
@@ -176,7 +200,7 @@ class SR530:
         self.send('L2,0')
 
 class ArduinoStageControllerDemo():
-    def __init__(self, port, baudrate):
+    def __init__(self, **kwargs):
         print('DEMO stage controller instantiating')
 
     def connect(self):
@@ -200,9 +224,9 @@ class ArduinoStageControllerDemo():
 
 class ArduinoStageController():
 
-    def __init__(self, port, baudrate):
-        self.port = port
-        self.baudrate = baudrate
+    def __init__(self, **kwargs):
+        self.port = kwargs.get("port")
+        self.baudrate = kwargs.get("baudrate")
 
     def connect(self):
         self.ser = serial.Serial(self.port, self.baudrate, timeout = 0.1)

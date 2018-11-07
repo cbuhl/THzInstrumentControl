@@ -1,0 +1,11 @@
+# use demo or SR530
+lia_name: "demo"
+# use com3 for NT or /dev/tty.usbserial for OSX
+lia_port: "/dev/tty.usbserial"
+lia_baud: 19200
+
+# use demo or arduino
+stage_name: "demo"
+# use com4 for NT or /dev/tty.usbmodem1421 for OSX
+stage_port: "/dev/tty.usbmodem1421"
+stage_baud: 9600
