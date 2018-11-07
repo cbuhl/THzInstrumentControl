@@ -26,6 +26,9 @@ Also note that the COM ports has to be set manually.
 ## Noteworthy nice bits
  - The live plotting. That works an absolute charm. The outline showed in the wrapper.py file should be shamelessly stolen and used by anyone writing scientific instrumentation GUIs in python. 
  
+## Noteworthy bad bits
+ - It's implemented as a QDialog, and not a QMainWindow. That has some bad repercussions, as it does not have a gentle way of closing, and you can accidentally kill the window by brushing the esc-key. 
+ 
  
 If you have suggestions for improvement, I'm all ears!
 Scan accumulations has not been implemented yet.
